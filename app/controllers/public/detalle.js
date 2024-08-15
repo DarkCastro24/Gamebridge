@@ -25,9 +25,8 @@ function readOneProducto(id) {
         // Se verifica si la petición es correcta, de lo contrario se muestra un mensaje indicando el problema.
         if (request.ok) {
             request.json().then(function (response) {
-                // Se comprueba si la respuesta es satisfactoria, de lo contrario se muestra un mensaje con la excepción.
+                // Se comprueba si la respuesta es satisfactoria.
                 if (response.status) {
-
                     // Se colocan los datos en la tarjeta de acuerdo al producto seleccionado previamente.
                     document.getElementById('imagen').setAttribute('src', '../../resources/img/productos/' + response.dataset.imagen);
                     document.getElementById('nombre').textContent = "Producto: " + response.dataset.producto;
@@ -48,12 +47,14 @@ function readOneProducto(id) {
                     seccion.innerHTML = `<input type="number" id="cantidad_producto" name="cantidad_producto" min="1" max="${response.dataset.cantidad}" class="validate anchoDetail" required/>`;
 
                 } else {
-
-                    // Se presenta un mensaje de error cuando no existen datos para mostrar.
-                    document.getElementById('title').innerHTML = `<i class="material-icons small">cloud_off</i><span class="red-text">${response.exception}</span>`;
-                    // Se limpia el contenido cuando no hay datos para mostrar.
-                    document.getElementById('nombre').innerHTML = '';
-
+                    // Se muestra un mensaje indicando que el producto no está en la base de datos.
+                    const container = document.querySelector('.portfolio-details .container');
+                    container.innerHTML = `
+                        <div class="alert alert-info text-center" role="alert">
+                            <h4 class="alert-heading">Producto no disponible</h4>
+                            <p>El producto ingresado no se encuentra en la base de datos.</p>
+                        </div>
+                    `;
                 }
             });
         } else {
@@ -63,6 +64,7 @@ function readOneProducto(id) {
         console.log(error);
     });
 }
+
 
 // Método manejador de eventos que se ejecuta cuando se envía el formulario de agregar un producto al carrito.
 /*document.getElementById('shopping-form').addEventListener('submit', function (event) {

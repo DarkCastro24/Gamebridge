@@ -4,15 +4,17 @@ require_once('../../app/helpers/public_page.php');
 // Se imprime la plantilla del encabezado enviando el título de la página web.
 Public_Page::headerTemplate('Gamebridge | Inicio sesión','Iniciar sesión');
 ?>
+
 <link type="text/css" rel="stylesheet" href="../../resources/css/login_styles.css" />
-<section class="h-100 gradient-form" style="background-color: #eee;">
-  <div class="container py-5 h-100">
+
+<section class="h-100 gradient-form">
+  <div class="container-fluid py-5 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col-xl-12">
-        <div class="card rounded-3 text-black">
-          <div class="row g-0">
+      <div class="col-xl-10"><br><br>
+        <div class="card rounded-3 text-black h-100">
+          <div class="row g-0 h-100">
             <div class="col-lg-6">
-              <div class="card-body p-md-5 mx-md-4">
+              <div class="card-body p-md-5 mx-md-4 h-100 d-flex flex-column justify-content-center">
 
                 <div class="text-center">
                   <h3 class="mt-1 mb-5 pb-1">Inicio de sesión</h3>
@@ -22,20 +24,18 @@ Public_Page::headerTemplate('Gamebridge | Inicio sesión','Iniciar sesión');
 
                   <div class="form-outline mb-4">
                     <label class="form-label" for="form2Example11">Usuario</label>
-                    <input type="email" id="usuario" name="usuario" class="form-control" placeholder="Ingrese su correo electronico" />
-
+                    <input type="email" id="usuario" name="usuario" class="form-control" placeholder="Ingrese su correo electrónico" />
                   </div>
 
                   <div class="form-outline mb-4">
                     <label class="form-label" for="form2Example22">Contraseña</label>
                     <input type="password" id="clave" name="clave" class="form-control" placeholder="Ingrese su contraseña" />
-
                   </div>
 
                 </form><br>
 
                 <div class="text-center">
-                <center><button onclick="iniciarSesion()" class="btn btn-dark btn-lg btn-block botonLogin" type="button">Iniciar sesión</button></center><br>
+                  <center><button onclick="iniciarSesion()" class="btn btn-dark btn-lg btn-block botonLogin" type="button">Iniciar sesión</button></center><br>
                 </div>
 
                 <div class="align-items-center justify-content-center">

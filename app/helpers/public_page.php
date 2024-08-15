@@ -50,7 +50,6 @@ class Public_Page
                                 <li><a class="nav-link scrollto" href="historial.php">Historial</a></li>
                                 <li><a class="nav-link scrollto" onclick="logOut()"> Usuario: '.$_SESSION['correo_cliente'].'</a></li>
                             </ul>
-                            <i class="bi bi-list mobile-nav-toggle"></i>
                             </nav>
                         </div>
                     </header>
@@ -59,7 +58,7 @@ class Public_Page
                 header('location: index.php');
             }
         } else {
-            if ($filename != 'cart.php' && $filename != 'register.php' && $filename != 'signin.php') {
+            if ($filename != 'cart.php') {
                 print('
                 <body>
                     <header id="header" class="d-flex align-items-center">
@@ -74,7 +73,6 @@ class Public_Page
                                 <li><a class="nav-link scrollto" href="register.php">Crear Cuenta</a></li>
                             <li><a class="nav-link scrollto" href="signin.php">Iniciar Sesión</a></li>     
                             </ul>
-                            <i class="bi bi-list mobile-nav-toggle"></i>
                             </nav>
                         </div>
                     </header>
@@ -109,9 +107,6 @@ class Public_Page
                 <div class="container footer-bottom clearfix">
                     <div class="copyright">
                         &copy; Copyright <strong><span>Gamebridge</span></strong>. Derechos reservados
-                    </div>
-                    <div class="credits">
-                        Diseñado por <a href="https://bootstrapmade.com/">Diego Castro</a>
                     </div>
                 </div>
             </footer>
