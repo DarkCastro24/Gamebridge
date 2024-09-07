@@ -44,7 +44,7 @@ if (isset($_GET['action'])) {
                                                 $result['status'] = 1;
                                                 $result['message'] = 'Cliente registrado correctamente';
                                             } else {
-                                                $result['exception'] = Database::getException();;           
+                                                $result['exception'] = Database::getException();           
                                             } 
                                         } else {
                                             $result['exception'] = $clientes->getPasswordError();
@@ -71,31 +71,69 @@ if (isset($_GET['action'])) {
 
             case 'logIn':
                 $_POST = $cliente->validateForm($_POST);
-                if ($cliente->checkUser($_POST['usuario'])) {
-                    if ($cliente->getEstado()) {
-                        if ($cliente->checkPassword($_POST['clave'])) {
-                            $_SESSION['id_cliente'] = $cliente->getId();
-                            $_SESSION['correo_cliente'] = $cliente->getCorreo();
-                            $result['status'] = 1;
-                            $result['message'] = 'Autenticación correcta';
+
+                // Verificación del reCAPTCHA
+                if (isset($_POST['g-recaptcha-response'])) {
+                    $recaptchaResponse = $_POST['g-recaptcha-response'];
+                    $secretKey = '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'; // Clave secreta de desarrollo (reemplaza en producción).
+                    
+                    // Solicitud a la API de Google para verificar el reCAPTCHA
+                    $url = 'https://www.google.com/recaptcha/api/siteverify';
+                    $data = array(
+                        'secret' => $secretKey,
+                        'response' => $recaptchaResponse
+                    );
+
+                    $options = array(
+                        'http' => array(
+                            'header'  => "Content-type: application/x-www-form-urlencoded\r\n", // Especifica el tipo de contenido
+                            'method'  => 'POST',
+                            'content' => http_build_query($data) // Codifica los datos
+                        )
+                    );
+
+                    $context  = stream_context_create($options);
+                    $verify = file_get_contents($url, false, $context);
+                    $captchaSuccess = json_decode($verify);
+
+                    // Verificación del resultado del reCAPTCHA
+                    if ($captchaSuccess->success) {
+                        // CAPTCHA validado correctamente, continuar con la autenticación
+                        $result['recaptcha'] = 1; // Marcar que el reCAPTCHA fue exitoso
+
+                        // Lógica de autenticación: verificar usuario y contraseña
+                        if ($cliente->checkUser($_POST['usuario'])) {
+                            if ($cliente->getEstado()) {
+                                if ($cliente->checkPassword($_POST['clave'])) {
+                                    $_SESSION['id_cliente'] = $cliente->getId();
+                                    $_SESSION['correo_cliente'] = $cliente->getCorreo();
+                                    $result['status'] = 1;
+                                    $result['message'] = 'Autenticación correcta';
+                                } else {
+                                    if (Database::getException()) {
+                                        $result['exception'] = Database::getException();
+                                    } else {
+                                        $result['exception'] = 'Clave incorrecta';
+                                    }
+                                }
+                            } else {
+                                $result['exception'] = 'La cuenta ha sido desactivada';
+                            }
                         } else {
                             if (Database::getException()) {
                                 $result['exception'] = Database::getException();
                             } else {
-                                $result['exception'] = 'Clave incorrecta';
+                                $result['exception'] = 'Alias incorrecto';
                             }
                         }
                     } else {
-                        $result['exception'] = 'La cuenta ha sido desactivada';
+                        $result['exception'] = 'Verificación del CAPTCHA fallida, por favor intente de nuevo.';
                     }
                 } else {
-                    if (Database::getException()) {
-                        $result['exception'] = Database::getException();
-                    } else {
-                        $result['exception'] = 'Alias incorrecto';
-                    }
+                    $result['exception'] = 'No se recibió el CAPTCHA.';
                 }
                 break;
+
             default:
                 $result['exception'] = 'Acción no disponible fuera de la sesión';
         }
